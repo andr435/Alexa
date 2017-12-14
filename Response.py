@@ -1,5 +1,6 @@
 import random
 
+
 class Response:
     api_version = "1.0"
     speach = {}
@@ -24,7 +25,10 @@ class Response:
     def set_card(self, title, text, small_pic=None, big_pic=None):
         self.card = {"type": "Standart", "title": title, "text": text}
         if small_pic is not None and big_pic is not None:
-            self.card['image'] = {"smallImageUrl": small_pic, "largeImageUrl": big_pic}
+            self.card['image'] = {
+                "smallImageUrl": small_pic, 
+                "largeImageUrl": big_pic
+                }
 
     def set_card_simple(self, title, text):
         self.card = {"type": "Simple", "title": title, "content": text}
@@ -41,7 +45,7 @@ class Response:
     def set_session(self, ses):
         self.session = ses
 
-    def add_to_session(self, ses)
+    def add_to_session(self, ses):
         for key, value in ses.items():
             if key not in self.session:
                 self.session[key] = value
@@ -66,10 +70,40 @@ class Response:
     def add_audio_directive(self, url, behavior = "REPLACE_ALL", token = None, offset = 0):
         if token is None:
             token = self.create_token()
-        directive = {"type": "AudioPlayer.Play", "playBehavior": behavior, "audioItem": { "stream": { "token": token, "url": url, "offsetInMilliseconds": offset }}}
+        directive = {
+            "type": "AudioPlayer.Play", 
+            "playBehavior": behavior, 
+            "audioItem": {
+                "stream": {
+                    "token": token, 
+                    "url": url, 
+                    "offsetInMilliseconds": offset
+                    }
+                }
+            }
+        
         self.add_directive(directive)
 
-    def set_audio_directive(self, behavior)
+    def create_response(self):
+        response = {
+            "version": self.api_version,
+            "sessionAttributes": self.session,
+            "response":{
+                "outputSpeech": self.speach,
+                "shouldEndSession": self.end_session
+            }
+        }
+        
+        if self.card is not None:
+            response["response"].append("card":self.card)
+            
+        if self.repromt is not None:
+            response["response"].append("repromt":self.repromt)
+
+        if self.directives is not None:
+            response["response"].append("directives":self.directives)
+            
+        return response
 
     def create_token(self, length = 64)
         rand = list('qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890')
@@ -78,5 +112,3 @@ class Response:
         for i in range(length):
             token +=random.choise(rand)
         return token
-        
-    
