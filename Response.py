@@ -104,7 +104,37 @@ class Response:
             response["response"].append("directives":self.directives)
             
         return response
-
+        
+    def create_clearqueue_response(self):
+        response = {
+            "version": self,api_version
+            "sessionAttributes": {},
+            "response": {
+                "directives": [
+                    {
+                        "type": "AudioPlayer.ClearQueue"
+                    }
+                ],
+                "shouldEndSession": True
+            }
+        }
+        return response
+        
+    def create_stop_response(self):
+        stop_response = {
+                    "version": self.api_version,
+                    "sessionAttributes": {},
+                    "response": {
+                        "directives": [
+                            {
+                                "type": "AudioPlayer.Stop"
+                            }
+                        ],
+                        "shouldEndSession": True
+                    }
+                }
+        return stop_response
+        
     def create_token(self, length = 64)
         rand = list('qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890')
         token = ''
